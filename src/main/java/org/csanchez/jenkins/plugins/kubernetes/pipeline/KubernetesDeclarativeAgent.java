@@ -2,7 +2,6 @@ package org.csanchez.jenkins.plugins.kubernetes.pipeline;
 
 import org.apache.commons.lang.StringUtils;
 import org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate;
-import org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud;
 import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.pipeline.modeldefinition.agent.DeclarativeAgent;
 import org.jenkinsci.plugins.pipeline.modeldefinition.agent.DeclarativeAgentDescriptor;
@@ -22,7 +21,7 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class KubernetesDeclarativeAgent extends DeclarativeAgent<KubernetesDeclarativeAgent> {
+public class KubernetesDeclarativeAgent<P extends KubernetesDeclarativeAgent> extends DeclarativeAgent<KubernetesDeclarativeAgent<KubernetesDeclarativeAgent>> {
 
     private static final Logger LOGGER = Logger.getLogger(KubernetesDeclarativeAgent.class.getName());
 
@@ -44,6 +43,9 @@ public class KubernetesDeclarativeAgent extends DeclarativeAgent<KubernetesDecla
     private String defaultContainer;
     private String yaml;
     private String yamlFile;
+
+    private String templateNamespace;
+    private String templateName;
 
     @DataBoundConstructor
     public KubernetesDeclarativeAgent() {
@@ -194,6 +196,24 @@ public class KubernetesDeclarativeAgent extends DeclarativeAgent<KubernetesDecla
         this.yamlFile = yamlFile;
     }
 
+    public String getTemplateNamespace() {
+        return templateNamespace;
+    }
+
+    @DataBoundSetter
+    public void setTemplateNamespace(String templateNamespace) {
+        this.templateNamespace = templateNamespace;
+    }
+
+    public String getTemplateName() {
+        return templateName;
+    }
+
+    @DataBoundSetter
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
+    }
+
     public Map<String, Object> getAsArgs() {
         Map<String, Object> argMap = new TreeMap<>();
 
@@ -251,6 +271,6 @@ public class KubernetesDeclarativeAgent extends DeclarativeAgent<KubernetesDecla
 
     @OptionalExtension(requirePlugins = "pipeline-model-extensions")
     @Symbol("kubernetes")
-    public static class DescriptorImpl extends DeclarativeAgentDescriptor<KubernetesDeclarativeAgent> {
+    public static class DescriptorImpl extends DeclarativeAgentDescriptor<KubernetesDeclarativeAgent<KubernetesDeclarativeAgent>> {
     }
 }
